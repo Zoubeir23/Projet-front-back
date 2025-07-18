@@ -1,0 +1,149 @@
+.aucune-commande {
+  text-align: center;
+  margin-top: 50px;
+  color: #666;
+}
+
+.liste-commandes {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.carte-commande {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 25px;
+  border-left: 4px solid #007bff;
+}
+
+.en-tete-commande {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.info-commande h3 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.info-commande p {
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.badge-statut {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.info-paiement {
+  text-align: right;
+}
+
+.info-paiement p {
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.adresse-livraison {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.adresse-livraison strong {
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.adresse-livraison p {
+  color: #666;
+  margin: 0;
+}
+
+.produits-commandes {
+  margin-bottom: 20px;
+}
+
+.produits-commandes strong {
+  color: #333;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.liste-produits-commande {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.article-commande {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.article-commande:last-child {
+  border-bottom: none;
+}
+
+.nom-produit-commande {
+  color: #333;
+  font-weight: 500;
+}
+
+.prix-produit-commande {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.pied-commande {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 2px solid #007bff;
+}
+
+.total-commande-affiche {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .carte-commande {
+    padding: 20px;
+  }
+  
+  .en-tete-commande {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .info-paiement {
+    text-align: left;
+  }
+  
+  .pied-commande {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .pied-commande button {
+    width: 100%;
+  }
+}

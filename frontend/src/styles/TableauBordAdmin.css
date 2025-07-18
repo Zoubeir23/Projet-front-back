@@ -1,0 +1,253 @@
+.conteneur-onglets {
+  margin-bottom: 30px;
+}
+
+.liste-onglets {
+  display: flex;
+  gap: 2px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.onglet {
+  padding: 12px 24px;
+  border: none;
+  background-color: transparent;
+  color: #666;
+  cursor: pointer;
+  border-radius: 6px 6px 0 0;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.onglet:hover {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.onglet-actif {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.contenu-onglet {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Commandes Admin */
+.liste-commandes-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.carte-commande-admin {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  border-left: 4px solid #007bff;
+}
+
+.en-tete-commande-admin {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.info-commande-admin h4 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.info-commande-admin p {
+  color: #666;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.info-montant {
+  text-align: right;
+}
+
+.montant-commande {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 5px;
+}
+
+.statut-paiement {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.actions-commande {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.selecteur-statut {
+  padding: 8px 12px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.selecteur-statut:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.btn-paiement {
+  white-space: nowrap;
+}
+
+/* Produits Admin */
+.carte-produit-admin {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  text-align: center;
+}
+
+.carte-produit-admin h4 {
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.prix-produit-admin {
+  color: #007bff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.stock-produit-admin,
+.categorie-produit-admin {
+  color: #666;
+  margin-bottom: 6px;
+}
+
+/* Catégories Admin */
+.carte-categorie-admin {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.carte-categorie-admin h4 {
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.carte-categorie-admin p {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.nombre-produits {
+  color: #007bff;
+  font-weight: 500;
+}
+
+/* Tableau Utilisateurs */
+.tableau-utilisateurs {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.tableau-admin {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableau-admin th {
+  background-color: #f8f9fa;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.tableau-admin td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  color: #555;
+}
+
+.tableau-admin tr:hover {
+  background-color: #f8f9fa;
+}
+
+.badge-role-admin {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.badge-role-admin.admin {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-role-admin.client {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .liste-onglets {
+    flex-wrap: wrap;
+  }
+  
+  .onglet {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .en-tete-commande-admin {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .info-montant {
+    text-align: left;
+  }
+  
+  .actions-commande {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .selecteur-statut {
+    width: 100%;
+  }
+  
+  .tableau-admin {
+    font-size: 0.9rem;
+  }
+  
+  .tableau-admin th,
+  .tableau-admin td {
+    padding: 10px;
+  }
+}

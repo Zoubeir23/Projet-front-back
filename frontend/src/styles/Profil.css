@@ -1,0 +1,65 @@
+.conteneur-profil {
+  max-width: 900px;
+}
+
+.texte-aide {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.info-compte {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.element-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.element-info strong {
+  color: #333;
+}
+
+.badge-role {
+  background-color: #007bff;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.statut-actif {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.alerte-succes {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .conteneur-profil {
+    max-width: 100%;
+  }
+  
+  .element-info {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
