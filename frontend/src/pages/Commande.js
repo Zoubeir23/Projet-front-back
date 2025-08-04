@@ -1,137 +1,265 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../config/axios';
 import { useUtiliserPanier } from '../contextes/ContextePanier';
 import { useUtiliserAuth } from '../contextes/ContexteAuth';
-import '../styles/Commande.css';
+import '../styles/Formulaires.css';
 
 const Commande = () => {
-  const [donneesFormulaire, setDonneesFormulaire] = useState({
-    adresseLivraison: '',
-    modePaiement: 'avant livraison'
-  });
-  const [chargement, setChargement] = useState(false);
-  const [erreur, setErreur] = useState('');
-  
   const { articlesPanier, obtenirTotalPanier, viderPanier } = useUtiliserPanier();
   const { utilisateurActuel } = useUtiliserAuth();
   const navigate = useNavigate();
 
+  const [donneesLivraison, setDonneesLivraison] = useState({
+    nom: utilisateurActuel?.name || '',
+    email: utilisateurActuel?.email || '',
+    telephone: '',
+    adresse: '',
+    ville: '',
+    codePostal: '',
+    pays: 'France'
+  });
+
+  const [methodePaiement, setMethodePaiement] = useState('carte');
+  const [chargement, setChargement] = useState(false);
+  const [erreur, setErreur] = useState('');
+
   const gererChangement = (e) => {
-    setDonneesFormulaire({
-      ...donneesFormulaire,
+    setDonneesLivraison({
+      ...donneesLivraison,
       [e.target.name]: e.target.value
     });
   };
 
-  const gererSoumission = async (e) => {
+  const gererCommande = async (e) => {
     e.preventDefault();
     setChargement(true);
     setErreur('');
 
     try {
-      const donneesCommande = {
-        produits: articlesPanier.map(article => ({
-          produit: article._id,
-          quantite: article.quantite
-        })),
-        adresseLivraison: donneesFormulaire.adresseLivraison,
-        modePaiement: donneesFormulaire.modePaiement
-      };
+      // Ici vous feriez l'appel API pour créer la commande
+      // const commande = await axiosInstance.post('/api/orders', {
+      //   items: articlesPanier,
+      //   shipping: donneesLivraison,
+      //   payment_method: methodePaiement,
+      //   total: obtenirTotalPanier()
+      // });
 
-      const response = await axiosInstance.post('/api/orders', donneesCommande);
+      // Simulation d'une commande réussie
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       viderPanier();
-      alert('Commande passée avec succès !');
-      navigate('/mes-commandes');
+      navigate('/mes-commandes', { 
+        state: { 
+          message: 'Commande passée avec succès !',
+          numeroCommande: 'CMD-' + Date.now()
+        }
+      });
     } catch (error) {
-      setErreur(error.response?.data?.message || 'Erreur lors de la commande');
-    } finally {
-      setChargement(false);
+      setErreur('Erreur lors de la création de la commande');
     }
+
+    setChargement(false);
   };
 
   if (articlesPanier.length === 0) {
     return (
-      <div className="conteneur centre-texte" style={{ marginTop: '50px' }}>
-        <h2>Votre panier est vide</h2>
-        <p>Ajoutez des produits avant de passer commande.</p>
+      <div className="conteneur">
+        <div className="message-info">
+          <h2>Aucun article dans votre panier</h2>
+          <p>Ajoutez des produits à votre panier avant de passer commande.</p>
+          <button onClick={() => navigate('/produits')} className="btn btn-primaire">
+            Voir les produits
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="conteneur conteneur-commande">
-      <h1>Finaliser la commande</h1>
-      
-      <div className="grille grille-2">
-        <div className="carte">
-          <h3>Récapitulatif de la commande</h3>
-          <div className="liste-articles-commande">
-            {articlesPanier.map(article => (
-              <div key={article._id} className="article-recapitulatif">
-                <div className="info-article-recap">
-                  <strong>{article.nom}</strong>
-                  <br />
-                  <small>Quantité: {article.quantite}</small>
+    <div className="conteneur">
+      <div className="commande-container">
+        <h1>Finaliser ma commande</h1>
+
+        {erreur && (
+          <div className="alerte alerte-erreur">
+            {erreur}
+          </div>
+        )}
+
+        <div className="commande-layout">
+          <div className="formulaire-commande">
+            <form onSubmit={gererCommande}>
+              <div className="section-commande">
+                <h3>📦 Informations de livraison</h3>
+                
+                <div className="groupe-champs-double">
+                  <div className="groupe-champ">
+                    <label>Nom complet *</label>
+                    <input
+                      type="text"
+                      name="nom"
+                      value={donneesLivraison.nom}
+                      onChange={gererChangement}
+                      className="controle-formulaire"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="groupe-champ">
+                    <label>Email *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={donneesLivraison.email}
+                      onChange={gererChangement}
+                      className="controle-formulaire"
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="prix-article-recap">
-                  {(article.prix * article.quantite).toFixed(2)}€
+
+                <div className="groupe-champ">
+                  <label>Téléphone *</label>
+                  <input
+                    type="tel"
+                    name="telephone"
+                    value={donneesLivraison.telephone}
+                    onChange={gererChangement}
+                    className="controle-formulaire"
+                    required
+                  />
+                </div>
+
+                <div className="groupe-champ">
+                  <label>Adresse *</label>
+                  <input
+                    type="text"
+                    name="adresse"
+                    value={donneesLivraison.adresse}
+                    onChange={gererChangement}
+                    className="controle-formulaire"
+                    placeholder="Numéro et nom de rue"
+                    required
+                  />
+                </div>
+
+                <div className="groupe-champs-double">
+                  <div className="groupe-champ">
+                    <label>Ville *</label>
+                    <input
+                      type="text"
+                      name="ville"
+                      value={donneesLivraison.ville}
+                      onChange={gererChangement}
+                      className="controle-formulaire"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="groupe-champ">
+                    <label>Code postal *</label>
+                    <input
+                      type="text"
+                      name="codePostal"
+                      value={donneesLivraison.codePostal}
+                      onChange={gererChangement}
+                      className="controle-formulaire"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-          <div className="total-commande">
-            <span>Total:</span>
-            <span>{obtenirTotalPanier().toFixed(2)}€</span>
-          </div>
-        </div>
 
-        <div className="carte">
-          <h3>Informations de livraison</h3>
-          
-          {erreur && (
-            <div className="alerte alerte-erreur">
-              {erreur}
-            </div>
-          )}
+              <div className="section-commande">
+                <h3>💳 Mode de paiement</h3>
+                
+                <div className="options-paiement">
+                  <label className="option-paiement">
+                    <input
+                      type="radio"
+                      name="methodePaiement"
+                      value="carte"
+                      checked={methodePaiement === 'carte'}
+                      onChange={(e) => setMethodePaiement(e.target.value)}
+                    />
+                    <span>💳 Carte bancaire</span>
+                  </label>
+                  
+                  <label className="option-paiement">
+                    <input
+                      type="radio"
+                      name="methodePaiement"
+                      value="paypal"
+                      checked={methodePaiement === 'paypal'}
+                      onChange={(e) => setMethodePaiement(e.target.value)}
+                    />
+                    <span>🅿️ PayPal</span>
+                  </label>
+                  
+                  <label className="option-paiement">
+                    <input
+                      type="radio"
+                      name="methodePaiement"
+                      value="virement"
+                      checked={methodePaiement === 'virement'}
+                      onChange={(e) => setMethodePaiement(e.target.value)}
+                    />
+                    <span>🏦 Virement bancaire</span>
+                  </label>
+                </div>
+              </div>
 
-          <form onSubmit={gererSoumission} className="formulaire">
-            <div className="groupe-champ">
-              <label>Adresse de livraison</label>
-              <textarea
-                name="adresseLivraison"
-                value={donneesFormulaire.adresseLivraison}
-                onChange={gererChangement}
-                className="controle-formulaire"
-                rows="4"
-                required
-                placeholder="Entrez votre adresse complète de livraison"
-              />
-            </div>
-
-            <div className="groupe-champ">
-              <label>Mode de paiement</label>
-              <select
-                name="modePaiement"
-                value={donneesFormulaire.modePaiement}
-                onChange={gererChangement}
-                className="controle-formulaire"
-                required
+              <button
+                type="submit"
+                className="btn btn-primaire btn-pleine-largeur btn-commande"
+                disabled={chargement}
               >
-                <option value="avant livraison">Paiement avant livraison</option>
-                <option value="après livraison">Paiement à la livraison</option>
-              </select>
-            </div>
+                {chargement ? 'Traitement...' : `Passer la commande (${obtenirTotalPanier().toFixed(2)}€)`}
+              </button>
+            </form>
+          </div>
 
-            <button 
-              type="submit" 
-              className="btn btn-primaire btn-pleine-largeur btn-confirmer"
-              disabled={chargement}
-            >
-              {chargement ? 'Traitement...' : 'Confirmer la commande'}
-            </button>
-          </form>
+          <div className="resume-commande">
+            <div className="carte-resume">
+              <h3>Récapitulatif</h3>
+              
+              <div className="articles-resume">
+                {articlesPanier.map(article => (
+                  <div key={article._id || article.id} className="article-resume">
+                    <div className="article-info">
+                      <span className="nom">{article.nom}</span>
+                      <span className="quantite">x{article.quantite}</span>
+                    </div>
+                    <span className="prix">{(article.prix * article.quantite).toFixed(2)}€</span>
+                  </div>
+                ))}
+              </div>
+
+              <hr />
+
+              <div className="ligne-resume">
+                <span>Sous-total</span>
+                <span>{obtenirTotalPanier().toFixed(2)}€</span>
+              </div>
+              
+              <div className="ligne-resume">
+                <span>Livraison</span>
+                <span>Gratuite</span>
+              </div>
+              
+              <div className="ligne-resume">
+                <span>TVA (20%)</span>
+                <span>{(obtenirTotalPanier() * 0.2).toFixed(2)}€</span>
+              </div>
+
+              <hr />
+
+              <div className="ligne-resume total">
+                <span>Total TTC</span>
+                <span>{(obtenirTotalPanier() * 1.2).toFixed(2)}€</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

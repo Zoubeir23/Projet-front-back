@@ -1,0 +1,409 @@
+/* ===== COMMANDES ===== */
+.commandes-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.commandes-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.commandes-header h1 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.commandes-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.aucune-commande {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.icone-commande {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.aucune-commande h2 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.aucune-commande p {
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+}
+
+.liste-commandes {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.carte-commande {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e5e9;
+  transition: transform 0.3s ease;
+}
+
+.carte-commande:hover {
+  transform: translateY(-2px);
+}
+
+.commande-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.commande-info h3 {
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.date-commande {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.badge-statut {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.commande-articles h4 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.articles-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.article-commande {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.article-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nom-article {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.quantite-article {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.prix-article {
+  font-weight: 600;
+  color: #27ae60;
+}
+
+.commande-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #ecf0f1;
+}
+
+.commande-total {
+  font-size: 1.2rem;
+  color: #2c3e50;
+}
+
+.commande-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-petit {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+}
+
+.commandes-stats {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-commandes h3 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-3px);
+}
+
+.stat-nombre {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3498db;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ===== COMMANDE LAYOUT ===== */
+.commande-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.commande-container h1 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.commande-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+}
+
+.formulaire-commande {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-commande {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.section-commande:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.section-commande h3 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.groupe-champs-double {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.options-paiement {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option-paiement {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option-paiement:hover {
+  border-color: #3498db;
+  background: #f8f9fa;
+}
+
+.option-paiement input[type="radio"] {
+  margin: 0;
+}
+
+.option-paiement input[type="radio"]:checked + span {
+  font-weight: 600;
+  color: #3498db;
+}
+
+.btn-commande {
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  margin-top: 1rem;
+}
+
+.resume-commande {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.articles-resume {
+  margin-bottom: 1.5rem;
+}
+
+.article-resume {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.article-resume:last-child {
+  border-bottom: none;
+}
+
+.article-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.article-info .nom {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.article-info .quantite {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.ligne-resume {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+.ligne-resume.total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+  border-top: 2px solid #ecf0f1;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .commandes-container,
+  .commande-container {
+    padding: 1rem;
+  }
+  
+  .commande-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .commande-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .commande-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .commande-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .groupe-champs-double {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .resume-commande {
+    position: static;
+  }
+}

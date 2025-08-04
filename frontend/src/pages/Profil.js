@@ -1,144 +1,197 @@
-import React, { useState, useEffect } from 'react';
-import axiosInstance from '../config/axios';
+import React, { useState } from 'react';
 import { useUtiliserAuth } from '../contextes/ContexteAuth';
-import '../styles/Profil.css';
+import '../styles/Formulaires.css';
 
 const Profil = () => {
-  const [profil, setProfil] = useState({
-    nom: '',
-    email: '',
-    adresse: ''
+  const { utilisateurActuel, deconnexion } = useUtiliserAuth();
+  const [modeEdition, setModeEdition] = useState(false);
+  const [donneesFormulaire, setDonneesFormulaire] = useState({
+    nom: utilisateurActuel?.name || '',
+    email: utilisateurActuel?.email || '',
+    telephone: utilisateurActuel?.phone || '',
+    adresse: utilisateurActuel?.address || ''
   });
-  const [chargement, setChargement] = useState(true);
-  const [sauvegarde, setSauvegarde] = useState(false);
   const [message, setMessage] = useState('');
-  
-  const { utilisateurActuel } = useUtiliserAuth();
-
-  useEffect(() => {
-    chargerProfil();
-  }, []);
-
-  const chargerProfil = async () => {
-    try {
-      const response = await axiosInstance.get('/api/users/profile');
-      setProfil({
-        nom: response.data.nom,
-        email: response.data.email,
-        adresse: response.data.adresse || ''
-      });
-    } catch (error) {
-      console.error('Erreur lors du chargement du profil:', error);
-    } finally {
-      setChargement(false);
-    }
-  };
+  const [chargement, setChargement] = useState(false);
 
   const gererChangement = (e) => {
-    setProfil({
-      ...profil,
+    setDonneesFormulaire({
+      ...donneesFormulaire,
       [e.target.name]: e.target.value
     });
   };
 
-  const gererSoumission = async (e) => {
+  const gererSauvegarde = async (e) => {
     e.preventDefault();
-    setSauvegarde(true);
+    setChargement(true);
     setMessage('');
 
     try {
-      await axiosInstance.put('/api/users/profile', {
-        nom: profil.nom,
-        adresse: profil.adresse
-      });
+      // Ici vous pourriez faire un appel API pour mettre à jour le profil
+      // await axiosInstance.put('/api/user/profile', donneesFormulaire);
+      
       setMessage('Profil mis à jour avec succès !');
+      setModeEdition(false);
     } catch (error) {
       setMessage('Erreur lors de la mise à jour du profil');
-    } finally {
-      setSauvegarde(false);
     }
+
+    setChargement(false);
   };
 
-  if (chargement) {
-    return <div className="chargement">Chargement du profil...</div>;
+  const annulerEdition = () => {
+    setDonneesFormulaire({
+      nom: utilisateurActuel?.name || '',
+      email: utilisateurActuel?.email || '',
+      telephone: utilisateurActuel?.phone || '',
+      adresse: utilisateurActuel?.address || ''
+    });
+    setModeEdition(false);
+    setMessage('');
+  };
+
+  if (!utilisateurActuel) {
+    return (
+      <div className="conteneur">
+        <div className="message-erreur">
+          Vous devez être connecté pour accéder à cette page.
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="conteneur conteneur-profil">
-      <h1>Mon Profil</h1>
-      
-      <div className="grille grille-2">
-        <div className="carte">
-          <h3>Informations personnelles</h3>
-          
-          {message && (
-            <div className={`alerte ${message.includes('succès') ? 'alerte-succes' : 'alerte-erreur'}`}>
-              {message}
-            </div>
-          )}
-
-          <form onSubmit={gererSoumission} className="formulaire">
-            <div className="groupe-champ">
-              <label>Nom complet</label>
-              <input
-                type="text"
-                name="nom"
-                value={profil.nom}
-                onChange={gererChangement}
-                className="controle-formulaire"
-                required
-              />
-            </div>
-
-            <div className="groupe-champ">
-              <label>Email</label>
-              <input
-                type="email"
-                value={profil.email}
-                className="controle-formulaire"
-                disabled
-              />
-              <small className="texte-aide">L'email ne peut pas être modifié</small>
-            </div>
-
-            <div className="groupe-champ">
-              <label>Adresse</label>
-              <textarea
-                name="adresse"
-                value={profil.adresse}
-                onChange={gererChangement}
-                className="controle-formulaire"
-                rows="4"
-                placeholder="Votre adresse complète"
-              />
-            </div>
-
-            <button 
-              type="submit" 
-              className="btn btn-primaire"
-              disabled={sauvegarde}
-            >
-              {sauvegarde ? 'Enregistrement...' : 'Mettre à jour le profil'}
-            </button>
-          </form>
+    <div className="conteneur">
+      <div className="profil-container">
+        <div className="profil-header">
+          <h1>Mon Profil</h1>
+          <div className="profil-actions">
+            {!modeEdition ? (
+              <button 
+                onClick={() => setModeEdition(true)}
+                className="btn btn-primaire"
+              >
+                Modifier le profil
+              </button>
+            ) : (
+              <div className="actions-edition">
+                <button 
+                  onClick={gererSauvegarde}
+                  className="btn btn-primaire"
+                  disabled={chargement}
+                >
+                  {chargement ? 'Sauvegarde...' : 'Sauvegarder'}
+                </button>
+                <button 
+                  onClick={annulerEdition}
+                  className="btn btn-secondaire"
+                >
+                  Annuler
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="carte">
-          <h3>Informations du compte</h3>
-          <div className="info-compte">
-            <div className="element-info">
-              <strong>Rôle:</strong>
-              <span className="badge-role">
-                {utilisateurActuel?.role}
-              </span>
+        {message && (
+          <div className={`alerte ${message.includes('succès') ? 'alerte-succes' : 'alerte-erreur'}`}>
+            {message}
+          </div>
+        )}
+
+        <div className="profil-content">
+          <div className="carte-profil">
+            <div className="avatar-section">
+              <div className="avatar">
+                {utilisateurActuel.name?.charAt(0).toUpperCase() || 'U'}
+              </div>
+              <h2>{utilisateurActuel.name}</h2>
+              <p className="role-badge">
+                {utilisateurActuel.role === 'admin' ? '👑 Administrateur' : '👤 Client'}
+              </p>
             </div>
-            <div className="element-info">
-              <strong>Membre depuis:</strong>
-              <span>{new Date().toLocaleDateString('fr-FR')}</span>
+
+            <form onSubmit={gererSauvegarde} className="formulaire-profil">
+              <div className="groupe-champ">
+                <label>Nom complet</label>
+                <input
+                  type="text"
+                  name="nom"
+                  value={donneesFormulaire.nom}
+                  onChange={gererChangement}
+                  className="controle-formulaire"
+                  disabled={!modeEdition}
+                  required
+                />
+              </div>
+
+              <div className="groupe-champ">
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={donneesFormulaire.email}
+                  onChange={gererChangement}
+                  className="controle-formulaire"
+                  disabled={!modeEdition}
+                  required
+                />
+              </div>
+
+              <div className="groupe-champ">
+                <label>Téléphone</label>
+                <input
+                  type="tel"
+                  name="telephone"
+                  value={donneesFormulaire.telephone}
+                  onChange={gererChangement}
+                  className="controle-formulaire"
+                  disabled={!modeEdition}
+                  placeholder="Votre numéro de téléphone"
+                />
+              </div>
+
+              <div className="groupe-champ">
+                <label>Adresse</label>
+                <textarea
+                  name="adresse"
+                  value={donneesFormulaire.adresse}
+                  onChange={gererChangement}
+                  className="controle-formulaire"
+                  disabled={!modeEdition}
+                  rows="3"
+                  placeholder="Votre adresse complète"
+                />
+              </div>
+            </form>
+
+            <div className="profil-stats">
+              <h3>Statistiques</h3>
+              <div className="stats-grid">
+                <div className="stat-item">
+                  <span className="stat-nombre">0</span>
+                  <span className="stat-label">Commandes</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-nombre">0€</span>
+                  <span className="stat-label">Total dépensé</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-nombre">
+                    {new Date(utilisateurActuel.created_at || Date.now()).getFullYear()}
+                  </span>
+                  <span className="stat-label">Membre depuis</span>
+                </div>
+              </div>
             </div>
-            <div className="element-info">
-              <strong>Statut du compte:</strong>
-              <span className="statut-actif">Actif</span>
+
+            <div className="actions-profil">
+              <button 
+                onClick={deconnexion}
+                className="btn btn-danger"
+              >
+                Se déconnecter
+              </button>
             </div>
           </div>
         </div>

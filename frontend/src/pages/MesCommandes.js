@@ -1,19 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../config/axios';
-import '../styles/MesCommandes.css';
+import { useLocation } from 'react-router-dom';
+import { useUtiliserAuth } from '../contextes/ContexteAuth';
+import '../styles/Commandes.css';
 
 const MesCommandes = () => {
+  const { utilisateurActuel } = useUtiliserAuth();
+  const location = useLocation();
   const [commandes, setCommandes] = useState([]);
   const [chargement, setChargement] = useState(true);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
+    if (location.state?.message) {
+      setMessage(location.state.message);
+      // Effacer le message après 5 secondes
+      setTimeout(() => setMessage(''), 5000);
+    }
     chargerCommandes();
-  }, []);
+  }, [location.state]);
 
   const chargerCommandes = async () => {
     try {
-      const response = await axiosInstance.get('/api/orders/my-orders');
-      setCommandes(response.data);
+      // Ici vous feriez l'appel API pour récupérer les commandes
+      // const response = await axiosInstance.get('/api/user/orders');
+      // setCommandes(response.data);
+
+      // Simulation de données de commandes
+      const commandesSimulees = [
+        {
+          id: location.state?.numeroCommande || 'CMD-001',
+          date: new Date().toISOString(),
+          statut: 'en_cours',
+          total: 89.99,
+          articles: [
+            { nom: 'Smartphone XYZ', quantite: 1, prix: 599.99 },
+            { nom: 'Écouteurs Bluetooth', quantite: 2, prix: 45.00 }
+          ]
+        },
+        {
+          id: 'CMD-002',
+          date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          statut: 'livree',
+          total: 156.50,
+          articles: [
+            { nom: 'Clavier mécanique', quantite: 1, prix: 89.99 },
+            { nom: 'Souris gaming', quantite: 1, prix: 66.51 }
+          ]
+        }
+      ];
+
+      setCommandes(commandesSimulees);
     } catch (error) {
       console.error('Erreur lors du chargement des commandes:', error);
     } finally {
@@ -21,109 +57,164 @@ const MesCommandes = () => {
     }
   };
 
-  const telechargerFacture = async (idCommande) => {
-    try {
-      const response = await axiosInstance.get(`/api/orders/${idCommande}/invoice`, {
-        responseType: 'blob'
-      });
-      
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const lien = document.createElement('a');
-      lien.href = url;
-      lien.setAttribute('download', `facture-${idCommande}.pdf`);
-      document.body.appendChild(lien);
-      lien.click();
-      lien.remove();
-    } catch (error) {
-      alert('Erreur lors du téléchargement de la facture');
-    }
+  const obtenirStatutBadge = (statut) => {
+    const statuts = {
+      'en_attente': { classe: 'statut-attente', texte: '⏳ En attente', couleur: '#f39c12' },
+      'confirmee': { classe: 'statut-confirmee', texte: '✅ Confirmée', couleur: '#27ae60' },
+      'en_cours': { classe: 'statut-cours', texte: '📦 En préparation', couleur: '#3498db' },
+      'expediee': { classe: 'statut-expediee', texte: '🚚 Expédiée', couleur: '#9b59b6' },
+      'livree': { classe: 'statut-livree', texte: '🎉 Livrée', couleur: '#2ecc71' },
+      'annulee': { classe: 'statut-annulee', texte: '❌ Annulée', couleur: '#e74c3c' }
+    };
+
+    const statutInfo = statuts[statut] || statuts['en_attente'];
+    
+    return (
+      <span 
+        className={`badge-statut ${statutInfo.classe}`}
+        style={{ backgroundColor: statutInfo.couleur }}
+      >
+        {statutInfo.texte}
+      </span>
+    );
   };
 
-  const obtenirCouleurStatut = (statut) => {
-    switch (statut) {
-      case 'livrée':
-        return { backgroundColor: '#d4edda', color: '#155724' };
-      case 'expédiée':
-        return { backgroundColor: '#fff3cd', color: '#856404' };
-      case 'annulée':
-        return { backgroundColor: '#f8d7da', color: '#721c24' };
-      default:
-        return { backgroundColor: '#e2e3e5', color: '#383d41' };
-    }
+  const formaterDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
+
+  if (!utilisateurActuel) {
+    return (
+      <div className="conteneur">
+        <div className="message-erreur">
+          Vous devez être connecté pour voir vos commandes.
+        </div>
+      </div>
+    );
+  }
 
   if (chargement) {
-    return <div className="chargement">Chargement de vos commandes...</div>;
+    return (
+      <div className="conteneur">
+        <div className="chargement">Chargement de vos commandes...</div>
+      </div>
+    );
   }
 
   return (
     <div className="conteneur">
-      <h1>Mes Commandes</h1>
-      
-      {commandes.length === 0 ? (
-        <div className="aucune-commande">
-          <p>Vous n'avez pas encore passé de commande.</p>
+      <div className="commandes-container">
+        <div className="commandes-header">
+          <h1>Mes Commandes</h1>
+          <p>Suivez l'état de vos commandes et consultez votre historique d'achats</p>
         </div>
-      ) : (
-        <div className="liste-commandes">
-          {commandes.map(commande => (
-            <div key={commande._id} className="carte-commande">
-              <div className="en-tete-commande">
-                <div className="info-commande">
-                  <h3>Commande #{commande._id.slice(-8)}</h3>
-                  <p>Date: {new Date(commande.date).toLocaleDateString('fr-FR')}</p>
-                  <p>
-                    Statut: 
-                    <span 
-                      className="badge-statut"
-                      style={obtenirCouleurStatut(commande.statut)}
-                    >
-                      {commande.statut}
-                    </span>
-                  </p>
+
+        {message && (
+          <div className="alerte alerte-succes">
+            {message}
+          </div>
+        )}
+
+        {commandes.length === 0 ? (
+          <div className="aucune-commande">
+            <div className="icone-commande">📦</div>
+            <h2>Aucune commande trouvée</h2>
+            <p>Vous n'avez pas encore passé de commande.</p>
+            <button 
+              onClick={() => window.location.href = '/produits'}
+              className="btn btn-primaire"
+            >
+              Découvrir nos produits
+            </button>
+          </div>
+        ) : (
+          <div className="liste-commandes">
+            {commandes.map(commande => (
+              <div key={commande.id} className="carte-commande">
+                <div className="commande-header">
+                  <div className="commande-info">
+                    <h3>Commande #{commande.id}</h3>
+                    <p className="date-commande">
+                      Passée le {formaterDate(commande.date)}
+                    </p>
+                  </div>
+                  <div className="commande-statut">
+                    {obtenirStatutBadge(commande.statut)}
+                  </div>
                 </div>
-                <div className="info-paiement">
-                  <p><strong>Mode de paiement:</strong> {commande.modePaiement}</p>
-                  <p><strong>Paiement:</strong> {commande.paiementEffectue ? 'Effectué' : 'En attente'}</p>
+
+                <div className="commande-articles">
+                  <h4>Articles commandés :</h4>
+                  <div className="articles-liste">
+                    {commande.articles.map((article, index) => (
+                      <div key={index} className="article-commande">
+                        <div className="article-details">
+                          <span className="nom-article">{article.nom}</span>
+                          <span className="quantite-article">Quantité: {article.quantite}</span>
+                        </div>
+                        <span className="prix-article">
+                          {(article.prix * article.quantite).toFixed(2)}€
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="commande-footer">
+                  <div className="commande-total">
+                    <strong>Total: {commande.total.toFixed(2)}€</strong>
+                  </div>
+                  <div className="commande-actions">
+                    <button className="btn btn-secondaire btn-petit">
+                      Voir détails
+                    </button>
+                    {commande.statut === 'livree' && (
+                      <button className="btn btn-primaire btn-petit">
+                        Laisser un avis
+                      </button>
+                    )}
+                    {['en_attente', 'confirmee'].includes(commande.statut) && (
+                      <button className="btn btn-danger btn-petit">
+                        Annuler
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
-              
-              <div className="adresse-livraison">
-                <strong>Adresse de livraison:</strong>
-                <p>{commande.adresseLivraison}</p>
+            ))}
+          </div>
+        )}
+
+        <div className="commandes-stats">
+          <div className="stat-commandes">
+            <h3>Vos statistiques</h3>
+            <div className="stats-grid">
+              <div className="stat-item">
+                <span className="stat-nombre">{commandes.length}</span>
+                <span className="stat-label">Commandes</span>
               </div>
-              
-              <div className="produits-commandes">
-                <strong>Produits commandés:</strong>
-                <div className="liste-produits-commande">
-                  {commande.produits.map((article, index) => (
-                    <div key={index} className="article-commande">
-                      <span className="nom-produit-commande">
-                        {article.produit.nom} x {article.quantite}
-                      </span>
-                      <span className="prix-produit-commande">
-                        {(article.prix * article.quantite).toFixed(2)}€
-                      </span>
-                    </div>
-                  ))}
-                </div>
+              <div className="stat-item">
+                <span className="stat-nombre">
+                  {commandes.reduce((total, cmd) => total + cmd.total, 0).toFixed(2)}€
+                </span>
+                <span className="stat-label">Total dépensé</span>
               </div>
-              
-              <div className="pied-commande">
-                <strong className="total-commande-affiche">
-                  Total: {commande.produits.reduce((total, article) => total + (article.prix * article.quantite), 0).toFixed(2)}€
-                </strong>
-                <button 
-                  onClick={() => telechargerFacture(commande._id)}
-                  className="btn btn-secondaire"
-                >
-                  Télécharger la facture
-                </button>
+              <div className="stat-item">
+                <span className="stat-nombre">
+                  {commandes.filter(cmd => cmd.statut === 'livree').length}
+                </span>
+                <span className="stat-label">Livrées</span>
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

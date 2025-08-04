@@ -8,13 +8,11 @@ const Inscription = () => {
     nom: '',
     email: '',
     motdepasse: '',
-    confirmerMotDePasse: '',
-    adresse: ''
+    confirmationMotdepasse: ''
   });
   const [erreur, setErreur] = useState('');
-  const [succes, setSucces] = useState('');
   const [chargement, setChargement] = useState(false);
-  
+
   const { inscription } = useUtiliserAuth();
   const navigate = useNavigate();
 
@@ -29,24 +27,26 @@ const Inscription = () => {
     e.preventDefault();
     setChargement(true);
     setErreur('');
-    setSucces('');
 
-    if (donneesFormulaire.motdepasse !== donneesFormulaire.confirmerMotDePasse) {
+    if (donneesFormulaire.motdepasse !== donneesFormulaire.confirmationMotdepasse) {
       setErreur('Les mots de passe ne correspondent pas');
       setChargement(false);
       return;
     }
 
-    const { confirmerMotDePasse, ...donneesUtilisateur } = donneesFormulaire;
-    const resultat = await inscription(donneesUtilisateur);
-    
+    const resultat = await inscription({
+      name: donneesFormulaire.nom,
+      email: donneesFormulaire.email,
+      password: donneesFormulaire.motdepasse,
+      password_confirmation: donneesFormulaire.confirmationMotdepasse
+    });
+
     if (resultat.succes) {
-      setSucces('Inscription réussie ! Vous pouvez maintenant vous connecter.');
-      setTimeout(() => navigate('/connexion'), 2000);
+      navigate('/connexion');
     } else {
       setErreur(resultat.erreur);
     }
-    
+
     setChargement(false);
   };
 
@@ -54,16 +54,10 @@ const Inscription = () => {
     <div className="conteneur-formulaire">
       <div className="carte-formulaire">
         <h2 className="titre-formulaire">Inscription</h2>
-        
+
         {erreur && (
           <div className="alerte alerte-erreur">
             {erreur}
-          </div>
-        )}
-
-        {succes && (
-          <div className="alerte alerte-succes">
-            {succes}
           </div>
         )}
 
@@ -77,6 +71,7 @@ const Inscription = () => {
               onChange={gererChangement}
               className="controle-formulaire"
               required
+              placeholder="Votre nom complet"
             />
           </div>
 
@@ -89,6 +84,7 @@ const Inscription = () => {
               onChange={gererChangement}
               className="controle-formulaire"
               required
+              placeholder="votre@email.com"
             />
           </div>
 
@@ -101,6 +97,7 @@ const Inscription = () => {
               onChange={gererChangement}
               className="controle-formulaire"
               required
+              placeholder="Minimum 8 caractères"
             />
           </div>
 
@@ -108,28 +105,17 @@ const Inscription = () => {
             <label>Confirmer le mot de passe</label>
             <input
               type="password"
-              name="confirmerMotDePasse"
-              value={donneesFormulaire.confirmerMotDePasse}
+              name="confirmationMotdepasse"
+              value={donneesFormulaire.confirmationMotdepasse}
               onChange={gererChangement}
               className="controle-formulaire"
               required
+              placeholder="Répétez votre mot de passe"
             />
           </div>
 
-          <div className="groupe-champ">
-            <label>Adresse</label>
-            <textarea
-              name="adresse"
-              value={donneesFormulaire.adresse}
-              onChange={gererChangement}
-              className="controle-formulaire"
-              rows="3"
-              placeholder="Votre adresse complète"
-            />
-          </div>
-
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primaire btn-pleine-largeur"
             disabled={chargement}
           >
